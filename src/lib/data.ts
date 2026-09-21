@@ -23,6 +23,13 @@ const DEMO_WINS: Win[] = [
   { id: '4', title: 'SecurePixels portfolio launch', date: '2026-02', desc: 'Jekyll, Chirpy theme, custom pixel branding.' },
 ]
 
+// Normalizes "YYYY-MM" to "YYYY-MM-01" for PostgreSQL DATE columns, and returns null if empty
+function toDate(val?: string | null): string | null {
+  if (!val || val.trim() === '') return null
+  const trimmed = val.trim()
+  return trimmed.length === 7 ? `${trimmed}-01` : trimmed
+}
+
 export async function loadCerts(): Promise<Cert[]> {
   if (supabase) {
     const { data, error } = await supabase.from('certs').select('*').order('earned', { ascending: false })
@@ -58,7 +65,6 @@ export async function loadWins(): Promise<Win[]> {
       console.error('Error loading accomplishments:', error)
       return []
     }
-    // Maps Supabase 'description' or 'desc' to 'desc' for the Tracker UI
     return (data || []).map((row: any) => ({
       id: row.id,
       title: row.title,
@@ -76,8 +82,8 @@ export async function addCert(c: Omit<Cert, 'id'>) {
     const { error } = await supabase.from('certs').insert({
       name: c.name,
       issuer: c.issuer || null,
-      earned: c.earned || null,
-      expires: c.expires || null,
+      earned: toDate(c.earned),
+      expires: toDate(c.expires),
       status: c.status || 'active',
       score: c.score || null,
       note: c.note || null,
@@ -96,7 +102,7 @@ export async function addTraining(t: Omit<Training, 'id'>) {
       name: t.name,
       provider: t.provider || null,
       type: t.type || 'course',
-      completed: t.completed || null,
+      completed: toDate(t.completed),
       note: t.note || null,
     })
     if (error) console.error('Error adding training:', error)
@@ -111,7 +117,7 @@ export async function addWin(w: Omit<Win, 'id'>) {
   if (supabase) {
     const { error } = await supabase.from('accomplishments').insert({
       title: w.title,
-      date: w.date || null,
+      date: toDate(w.date),
       description: w.desc || null,
     })
     if (error) console.error('Error adding win/accomplishment:', error)
