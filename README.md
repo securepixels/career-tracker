@@ -30,11 +30,3 @@ cd career-tracker
 # Open index.html in your browser, or:
 npx serve .
 ```
-
-## Live demo
-
-[View live on Vercel →](#)
-
-## Author
-
-Built by [Chrissy](https://securepixels.xyz)
