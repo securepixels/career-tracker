@@ -42,16 +42,7 @@ export function Tracker() {
   useEffect(() => {
     refresh()
 
-    // 1. Check existing Supabase session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    // 2. Secret keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A) to open Admin login
+    // Listen for Ctrl+Shift+A or Cmd+Shift+A
     const handleKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
         setModal('login')
@@ -59,9 +50,22 @@ export function Tracker() {
     }
     window.addEventListener('keydown', handleKey)
 
+    // Check auth only if supabase client is initialized
+    let unsubscribe = () => {}
+    if (supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session)
+      })
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session)
+      })
+      unsubscribe = () => subscription.unsubscribe()
+    }
+
     return () => {
-      subscription.unsubscribe()
       window.removeEventListener('keydown', handleKey)
+      unsubscribe()
     }
   }, [])
 
@@ -69,6 +73,10 @@ export function Tracker() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    if (!supabase) {
+      setAuthError('Supabase client is not configured')
+      return
+    }
     setAuthError('')
     const { error } = await supabase.auth.signInWithPassword({
       email: adminEmail,
@@ -86,7 +94,9 @@ export function Tracker() {
   }
 
   async function handleLogout() {
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     setSession(null)
     setPage('dash')
     showToast('Logged out')
