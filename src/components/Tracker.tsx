@@ -207,7 +207,7 @@ export function Tracker() {
         </>}
 
         <div className="footer">
-          <span>built by chrissy</span>
+          <span>built by Chrissy</span>
           {/* Clicking this version tag secretly opens the admin sign-in modal */}
           <span 
             onClick={() => !session && setModal('login')} 

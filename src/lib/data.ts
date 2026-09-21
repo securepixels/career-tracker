@@ -13,12 +13,11 @@ const DEMO_TRAINING: Training[] = [
   { id: '1', name: 'D488 - Cybersecurity Architecture and Engineering', provider: 'WGU', completed: '2026-03', type: 'course' },
   { id: '2', name: 'D485 - Cybersecurity Management', provider: 'WGU', completed: '2026-06', type: 'course' },
   { id: '3', name: 'CertMaster Labs - Advanced Exploitation', provider: 'CompTIA', completed: '2026-03', type: 'lab' },
-  { id: '4', name: 'MS Cybersecurity Capstone', provider: 'WGU', completed: '', type: 'course', note: 'In progress' },
 ]
 
 const DEMO_WINS: Win[] = [
   { id: '1', title: 'Passed PenTest+ with 815', date: '2026-05', desc: 'First attempt, no extensions needed.' },
-  { id: '2', title: 'Built SourceSecured site', date: '2026-01', desc: 'Next.js, TypeScript, and Tailwind.' },
+  { id: '2', title: 'Built SourceSecured site', date: '2024-07', desc: 'Next.js, TypeScript, and Tailwind.' },
   { id: '3', title: 'Nucleus Security coding challenge', date: '2026-03', desc: 'Most technical candidate interviewed.' },
   { id: '4', title: 'SecurePixels portfolio launch', date: '2026-02', desc: 'Jekyll, Chirpy theme, custom pixel branding.' },
 ]
